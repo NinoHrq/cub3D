@@ -81,7 +81,7 @@ char	**check_bottom_border(char **map, int map_height)
 	j = 0;
 	while (map[map_height - 1][j])
 	{
-		if (!is_space((unsigned char)map[map_h - 1][j]) && map[map_h - 1][j] != '1')
+		if (!is_space((unsigned char)map[map_height - 1][j]) && map[map_height - 1][j] != '1')
 			return (NULL);
 		j++;
 	}

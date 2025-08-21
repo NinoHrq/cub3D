@@ -42,7 +42,7 @@ int	check_down_tile(char **map, int r, int c, int map_height)
 	if (r >= map_height - 1)
 		return (1);
 	dnw = ft_strlen(map[r + 1]);
-	if (c >= dwn || !is_valid_tile(map[r + 1][c]))
+	if (c >= dnw || !is_valid_tile(map[r + 1][c]))
 		return (0);
 	return (1);
 }

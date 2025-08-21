@@ -13,7 +13,7 @@
 #include "../includes/cub3d.h"
 
 void puterr(const char *s);
-void tex_fail(const char *s);
+void tex_fail(t_game *g, const char *s);
 void tex_load_img_or_die(t_game *g, t_texture *t, char *path);
 void tex_get_addr_or_die(t_game *g, t_texture *t);
 
@@ -22,10 +22,10 @@ void puterr(const char *s)
     write(2, s, (int)ft_strlen(s));
 }
 
-void tex_fail(const char *s)
+void tex_fail(t_game *g ,const char *s)
 {
     puterr("Error\n");
-    puterr(msg);
+    puterr(s);
     free_textures_ulimit(g);
     free_game(g);
     exit(EXIT_FAILURE);
@@ -42,7 +42,7 @@ void tex_load_img_or_die(t_game *g, t_texture *t, char *path)
 
 void tex_get_addr_or_die(t_game *g, t_texture *t)
 {
-    t->img.addr = mlx_get_data_addr(t->img.img; &t->img.bits_per_pixel, &t->img.line_length, &t->img.endian);
+    t->img.addr = mlx_get_data_addr(t->img.img, &t->img.bits_per_pixel, &t->img.line_length, &t->img.endian);
     if(!t->img.addr)
         tex_fail(g, "mlx_get_data_addr failed\n");
 }

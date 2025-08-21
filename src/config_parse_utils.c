@@ -58,7 +58,7 @@ char	*parse_doc_line(char *str)
 	size_t	len;
 	char	*tmp;
 
-	if (!s)
+	if (!str)
 		return (NULL);
 	start = 0;
 	while (str[start] && (str[start] == ' ' || (str[start] >= 9 && str[start] <= 13)))

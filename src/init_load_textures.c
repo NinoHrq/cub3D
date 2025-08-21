@@ -20,7 +20,7 @@ void	free_textures(t_game *g);
 
 void	load_texture(t_game *g, t_texture *t, char *path)
 {
-	if (!game->mlx)
+	if (!g->mlx)
 		tex_fail(g, "mlx not initialized\n");
 	tex_load_img_or_die(g, t, path);
 	tex_get_addr_or_die(g, t);

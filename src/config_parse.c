@@ -22,7 +22,7 @@ void parsing_config(t_game *g, char **doc)
 {
     t_parser_context ctx;
 
-    parser_context_zero(&ctx);
+    parser_ctx_zero(&ctx);
     parse_identifiers(g, doc, &ctx);
     check_identifiers(g, ctx.x);
     ctx.start_map = find_map_start(doc, ctx.i);
@@ -98,7 +98,7 @@ void	map_from_doc(t_game *g, char **doc, int start_map, int map_size)
 
 	g->map = (char **)malloc(sizeof(char *) * (map_size + 1));
 	if (!g->map)
-		free_game_texture(g, "\n Allocation failed for map\n\n"),,
+		free_game_texture(g, "\n Allocation failed for map\n\n");
 	i = start_map;
 	j = 0;
 	while (doc[i] && j < map_size)

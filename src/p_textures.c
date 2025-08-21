@@ -25,7 +25,7 @@ char	**texture_slot(t_game *g, char id)
 		return (&g->west_texture);
 	if (id == 'E')
 		return (&g->east_texture);
-	return (NULL)
+	return (NULL);
 }
 
 void	assign_texture(t_game *g, t_parser_context *ctx, char id, char *doc)

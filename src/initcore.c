@@ -12,11 +12,11 @@
 
 #include "../includes/cub3d.h"
 
-void game_init(t_game *g, char *s);
+void game_init(t_game *g, const char *s);
 void player_zero(t_game *g);
-void texture_paths_zero(t_game *g);
+void texture_path_zero(t_game *g);
 void colors_zero(t_game *g);
-void init_layout(t_game *g, char *s);
+void layout_load(t_game *g, const char *s);
 
 void game_init(t_game *g, const char *path)
 {
@@ -47,7 +47,7 @@ void player_zero(t_game *g)
 	g->player.right_rotate = 0;
 }
 
-void texture_paths_zero(t_game *g)
+void texture_path_zero(t_game *g)
 {
 	g->north_texture = NULL;
 	g->west_texture = NULL;
@@ -72,7 +72,7 @@ void layout_load(t_game *g, const char *path)
 	if(!g->doc)
 		exit(1);
 	verify_info(g);
-	parse_config(g, g->doc);
+	parsing_config(g, g->doc);
 	if (parse_doc(g->doc, g->start_map))
 		exit_properly_parsing(g);
 	if (g->floor_color[0] == -1 || g->floor_color[1] == -1
@@ -85,8 +85,8 @@ void layout_load(t_game *g, const char *path)
 	}
 	if (g->map)
 		g->map = parse_wall(g->map, g);
-		if (g->map)
-			player_spawn(g->map, g);
-		else
-			free_game_texture(g, "");	
+	if (g->map)
+		player_spawn(g->map, g);
+	else
+		free_game_texture(g, "");	
 }

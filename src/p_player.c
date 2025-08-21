@@ -14,7 +14,7 @@
 
 void	process_spawn_tile(char **map, int i, int j, t_spawn_ctx *ctx);
 void	process_tile(char **map, int i, int j, t_spawn_ctx *ctx);
-void	check_multiple_spawns(int *d_flag, t_game *dt);
+void	check_invalid_cases(char **map, int i, int j, t_game *dt);
 void	player_spawn(char **map, t_game *dt);
 int		map_char_kind(char c);
 
@@ -57,12 +57,6 @@ void	player_spawn(char **map, t_game *dt)
 	}
 	if (ctx.d_flag == 0)
 		die_spawn(dt, "No spawn detected\n");
-}
-
-void	check_multiple_spawns(int *d_flag, t_game *dt)
-{
-	if (*d_flag > 0)
-		die_spawn(dt, "Miltiple spawn points\n");
 }
 
 void	check_invalid_cases(char **map, int i, int j, t_game *dt)

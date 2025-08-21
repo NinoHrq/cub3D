@@ -16,7 +16,7 @@ void	init_player_pos(t_game *g);
 void	init_mlx(t_game *g);
 void	init_colors(t_game *g);
 static int	rgb_to_int(const int tab[3]);
-void	initialize_context(t_doc *ctx, char *filename);
+void	initialize_context(t_doc *ctx, const char *filename);
 
 void	init_player_pos(t_game *g)
 {
@@ -25,7 +25,7 @@ void	init_player_pos(t_game *g)
 	g->player.x = g->index_player[0] + 0.5;
 	g->player.y = g->index_player[1] + 0.5;
 	if (g->player_init_direction == 'N')
-		game->player.angle = 3 * PI / 2;
+		g->player.angle = 3 * PI / 2;
 	else if (g->player_init_direction == 'S')
 		g->player.angle = PI / 2;
 	else if (g->player_init_direction == 'E')
@@ -47,7 +47,7 @@ void	init_mlx(t_game *g)
 		exit(EXIT_FAILURE);
 	}
 	g->win = mlx_new_window(g->mlx, WIDTH, HEIGHT, "cub3D");
-	if (!game->win)
+	if (!g->win)
 	{
 		printf("Impossible de créer la fenêtre (dimensions : %d x %d).\n",
 			WIDTH, HEIGHT);
@@ -60,7 +60,7 @@ void	init_mlx(t_game *g)
 			HEIGHT);
 		exit(EXIT_FAILURE);
 	}
-	g->img.addr = mlx_get_game_addr(g->img.img, &g->img.bits_per_pixel,
+	g->img.addr = mlx_get_data_addr(g->img.img, &g->img.bits_per_pixel,
 			&g->img.line_length, &g->img.endian);
 }
 
@@ -89,7 +89,7 @@ static int	rgb_to_int(const int tab[3])
 	return ((tab[0] << 16) | (tab[1] << 8) | tab[2]);
 }
 
-void	initialize_context(t_doc *ctx, char *filename)
+void	initialize_context(t_doc *ctx, const char *filename)
 {
 	ctx->fd = open(filename, O_RDONLY);
 	ctx->map = NULL;

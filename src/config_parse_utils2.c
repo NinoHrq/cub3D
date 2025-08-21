@@ -14,6 +14,7 @@
 
 int is_map_char(int c);
 int is_map_line(const char *str);
+void	check_multiple_spawns(int *d_flag, t_game *dt);
 
 int is_map_char(int c)
 {
@@ -44,4 +45,10 @@ int is_map_line(const char *str)
     }
     return (has_symbol);
         
+}
+
+void	check_multiple_spawns(int *d_flag, t_game *dt)
+{
+	if (*d_flag > 0)
+		die_spawn(dt, "Miltiple spawn points\n");
 }

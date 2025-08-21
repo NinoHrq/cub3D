@@ -16,7 +16,7 @@ void	handle_color_directive(t_game *g, t_parser_context *ctx, char *line);
 int	parse_color_line(char *s);
 void rgb_parse_triplet(char *s, int color[3], t_game *g);
 
-void rgb_parse_triplet(char *s, int color[3], t_game *g);
+void rgb_parse_triplet(char *s, int color[3], t_game *g)
 {
     char    *ptr;
     char    *end;
@@ -29,7 +29,7 @@ void rgb_parse_triplet(char *s, int color[3], t_game *g);
     {
         while (*ptr && is_space((unsigned char)*ptr))
             ptr++;
-        val = my_strtol(ptr, &end, 10);
+        val = my_strtol(ptr, &end);
         if (ptr == end || val < 0 || val > 255)
         {
             puterr("Error\nInvalid color component\n");
@@ -52,7 +52,7 @@ void	handle_color_directive(t_game *g, t_parser_context *ctx, char *line)
             puterr("Error\nWrong floor format\n");
             free_wrong_color(g);
         }
-        rgb_parse_triplet(line + 2, game->floor_color, g);
+        rgb_parse_triplet(line + 2, g->floor_color, g);
         ctx->x++;
     }
     else if (ft_strncmp(line, "C ", 2) == 0)
@@ -62,7 +62,7 @@ void	handle_color_directive(t_game *g, t_parser_context *ctx, char *line)
             puterr("Error\nWrong ceiling format\n");
             free_wrong_color(g);
         }
-        rgb_parse_triplet(line + 2, game->ceiling_color, g);
+        rgb_parse_triplet(line + 2, g->ceiling_color, g);
         ctx->x++;
     }
 }

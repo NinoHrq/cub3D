@@ -16,7 +16,7 @@ void	handle_left_right_movement(t_game *g, t_movement *m);
 void	move_left_right(t_game *g, t_movement *m, int dir);
 void	handle_rotation(t_game *g, t_movement *m);
 void	rotate_player(t_game *g, t_movement *m, int dir);
-void	put_pixel(t_img *img, int x, int y, int color);
+void	put_pixel(t_ig *img, int x, int y, int color);
 
 void	handle_left_right_movement(t_game *g, t_movement *m)
 {
@@ -35,7 +35,7 @@ void	move_left_right(t_game *g, t_movement *m, int dir)
 	m->new_y = g->player.y + g->player.plane_y * spd * dir;
 	if (!is_near_wall(g, m->new_x, g->player.y))
 		g->player.x = m->new_x;
-	if (!is_near_wall(game, game->player.x, movement->new_y))
+	if (!is_near_wall(g, g->player.x, m->new_y))
 		g->player.y = m->new_y;
 }
 
@@ -58,11 +58,11 @@ void	rotate_player(t_game *g, t_movement *m, int dir)
 	g->player.dir_x = g->player.dir_x * cs - g->player.dir_y * sn;
 	g->player.dir_y = m->old_dir_x * sn	+ g->player.dir_y * cs;
 	m->old_plane_x = g->player.plane_x;
-	g->player.plane_x = g->player.plane_x * cs - game->player.plane_y * sn;
+	g->player.plane_x = g->player.plane_x * cs - g->player.plane_y * sn;
 	g->player.plane_y = m->old_plane_x * sn	+ g->player.plane_y * cs;
 }
 
-void	put_pixel(t_img *img, int x, int y, int color)
+void	put_pixel(t_ig *img, int x, int y, int color)
 {
 	char	*dst;
 

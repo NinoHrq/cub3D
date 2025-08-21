@@ -14,7 +14,6 @@
 
 void	move_player(t_game *g);
 void	draw_floor_and_ceiling(t_game *g);
-void	raycast(t_game *g);
 int		drawing(t_game *g);
 
 void	move_player(t_game *g)
@@ -45,24 +44,6 @@ void	draw_floor_and_ceiling(t_game *g)
 			x++;
 		}
 		y++;
-	}
-}
-
-void	raycast(t_game *g)
-{
-	int			x;
-	t_raycast	rc;
-
-	x = 0;
-	while (x < WIDTH)
-	{
-		init_raycast(&rc, g, x);
-		calculate_step_and_side_dist(&rc, g);
-		perform_dda(&rc, g);
-		calculate_wall_distance_and_draw_range(&rc, g);
-		select_texture_and_calculate_tex_coords(&rc, g);
-		draw_wall_column(&rc, g, x);
-		x++;
 	}
 }
 

@@ -45,7 +45,7 @@ int	is_below_cell_valid(char **map, int r, int c, int map_height)
 int	is_cell_valid(char **map, int r, int c, int map_height)
 {
 	if (map[r][c] != '0')
-		retrun (1);
+		return (1);
 	if (r > 0 && !is_above_cell_valid(map, r, c))
 		return (0);
 	if (r < map_height - 1 && !is_below_cell_valid(map, r, c, map_height))
@@ -66,7 +66,7 @@ char	**check_map(char **map, int map_height, int max_width)
 		while (r< map_height)
 		{
 			current_width = (int)ft_strlen(map[r]);
-			if (c < current_width && !is_cell_valid(map, r,c map_height))
+			if (c < current_width && !is_cell_valid(map, r, c, map_height))
 				return (NULL);
 			r++;
 		}

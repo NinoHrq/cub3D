@@ -12,8 +12,8 @@
 
 #include "../includes/cub3d.h"
 
-char **get_doc(char *filename);
-static int	ensure_capacity(t_doc *ctx);
+char **get_doc(const char *filename);
+int	ensure_capacity(t_doc *ctx);
 int ctx_init(t_doc *ctx, const char *filename);
 char **allocate_map(int size);
 char **reallocate_map(char **map, int pre_size, int new_size);
@@ -25,7 +25,7 @@ char **get_doc(const char *filename)
 	
 	if(ctx_init(&ctx, filename))
 		return(NULL);
-	ctx.line = get_next_line(ctx.fd);
+	ctx.line = get_next_line(ctx.fd, 0);
 	while(ctx.line)
 	{
 		if(ensure_capacity(&ctx))
@@ -38,14 +38,14 @@ char **get_doc(const char *filename)
 		process_line(&ctx);
 		ctx.j++;
 		free(ctx.line);
-		ctx.line = get_next_line(ctx.fd);
+		ctx.line = get_next_line(ctx.fd, 0);
 	}
 	ctx.map[ctx.j] = NULL;
 	closing_fd(&ctx);
 	return(ctx.map);	
 }
 
-static init ensure_capacity(t_doc *ctx)
+int ensure_capacity(t_doc *ctx)
 {
 	char	**old;
 	char	**new_map;
@@ -61,17 +61,20 @@ static init ensure_capacity(t_doc *ctx)
 	return (0);
 }
 
-int init_ctx(t_doc *ctx, const char *filename)
+int ctx_init(t_doc *ctx, const char *filename)
 {
-	initialize_context(ctx, (char *)filename);
+	initialize_context(ctx, filename);
 	if (ctx->fd < 0)
 	{
-		printf("\n can't open the file in init_ctx \n");
+		fprintf(stderr, "Error: cannot open '%s': %s\n", filename, strerror(errno));
+		printf("Error\n");
+		printf("\n can't open the file in ctx_init \n");
 		return (1);
 	}
 	ctx->map = allocate_map(ctx->size);
 	if (!ctx->map)
 	{
+		fprintf(stderr, "Allocate map failed\n");
 		printf("\n Allocate map failed \n");
 		return (1);
 	}

@@ -85,7 +85,7 @@ void	calculate_y_step_and_side_dist(t_raycast *rc, t_game *g)
 	}
 }
 
-void	calculate_step_and_side_dist(t_raycast *rc, t_game *)
+void	calculate_step_and_side_dist(t_raycast *rc, t_game *g)
 {
 	calculate_x_step_and_side_dist(rc, g);
 	calculate_y_step_and_side_dist(rc, g);
