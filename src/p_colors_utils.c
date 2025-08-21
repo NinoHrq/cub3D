@@ -6,79 +6,70 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 17:46:07 by marvin            #+#    #+#             */
-/*   Updated: 2025/07/15 18:38:09 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/20 23:57:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../includes/cub3d.h"
 
-long my_strtol(const char *str, char **endptr, int base);
-void	skip_whitespace(const char **str):
-int	get_sign(const char **str);
-int	determine_base(const char **str, int base);
-long	parse_digits(const char **str, int base, int sign, char **endptr);
+long my_strtol(const char *str, char **endptr);
+int	is_digit(int c);
+void	free_wrong_color(t_game *g);
+void	protect_wrong_color(char **ptr, t_game *g);
 
-long my_strtol(const char *str, char **endptr, int base)
+int	is_digit(int c)
 {
-	int	sign;
-
-	skip_whitespace(&str);
-	sign = get_sign(&str);
-	base = determine_base(&str, base);
-	return (parse_digits(&str, base, sign, endptr));
+	return (c >= '0' && c <= '9');
 }
 
-void	skip_whitespace(const char **str)
+long my_strtol(const char *str, char **endptr)
 {
-	while (isspace((unsigned char)**str))
-		(*str)++;
+	long	val;
+
+	if(!str)
+		return (0);
+	while (*str && is_space((unsigned char)*str))
+		str++;
+	val = 0;
+	while (*str && is_digit((unsigned char)*str))
+	{
+		val = val * 10 + (*str - '0');
+		str++;
+	}
+	if(endptr)
+		*endptr = (char *)str;
+	return (val);
 }
 
-int	get_sign(const char **str)
+void	free_wrong_color(t_game *g)
 {
-	int	sign;
-
-	sign = 1;
-	if (**str == '-' || **str == '+')
-	{
-		if (**str == '-')
-			sign = -1;
-		(*str)++;
-	}
-	return (sign);
+	if (g->north_texture)
+		free(g->north_texture);
+	if (g->south_texture)
+		free(g->south_texture);
+	if (g->east_texture)
+		free(g->east_texture);
+	if (g->west_texture)
+		free(g->west_texture);
+	if (g->doc)
+		free_tab(g->doc);
+	exit(1);
 }
 
-int	determine_base(const char **str, int base)
+void	protect_wrong_color(char **ptr, t_game *g)
 {
-	if ((base == 0 || base == 16) && **str == '0' && ((*str)[1] == 'x'
-		|| (*str)[1] == 'X'))
-	{
-		base = 16;
-		(*str) += 2;
-	}
-	else if (base == 0 && **str == '0')
-	{
-		base = 8;
-		(*str)++;
-	}
-	else if (base == 0)
-		base = 10;
-	return (base);
-}
-long	parse_digits(const char **str, int base, int sign, char **endptr)
-{
-	t_parse_state	state;
+	char	*p;
 
-	state.result = 0;
-	while (**str)
+	p = *ptr;
+	while (*p && is_space((unsigned char)*p))
+		p++;
+	if(*p != ',')
 	{
-		state.digit = get_digit_value(**str);
-		if (state.digit == -1 || !is_valid_digit(state.digit, base))
-			break ;
-		state.result = update_result(&state, base, sign, endptr);
-		(*str)++;
+		puterr("Error\nInvalid color format\n");
+		free_wrong_color(g);
 	}
-	if (endptr)
-		*endptr = (char *)*str;
-	return (state.result * sign);
+	p++;
+	while (*p && is_space((unsigned char)*p))
+		p++;
+	*ptr = p;
 }

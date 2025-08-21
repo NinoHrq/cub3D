@@ -13,8 +13,8 @@
 #include "../includes/cub3d.h"
 
 void	init_player_pos(t_game *g);
-void	init_mlx(t_game *game);
-void	init_colors(t_game *game);
+void	init_mlx(t_game *g);
+void	init_colors(t_game *g);
 static int	rgb_to_int(const int tab[3]);
 void	initialize_context(t_doc *ctx, char *filename);
 

@@ -6,65 +6,45 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 15:25:29 by marvin            #+#    #+#             */
-/*   Updated: 2025/07/15 15:46:23 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/21 01:26:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../includes/cub3d.h"
 
-void	assign_texture(t_game *game, t_parser_context *ctx, char c, char *doc);
-void	assign_north_texture(t_game *game, char *doc);
-void	assign_south_texture(t_game *game, char *doc);
-void	assign_west_texture(t_game *game, char *doc);
-void	assign_east_texture(t_game *game, char *doc);
+void	assign_texture(t_game *g, t_parser_context *ctx, char c, char *doc);
+char	**texture_slot(t_game *g, char id);
 
-void	assign_north_texture(t_game *game, char *doc)
+char	**texture_slot(t_game *g, char id)
 {
-	if (!game->north_texture)
-		game->north_texture = ft_strdup(doc + 3);
-	else
-		free_game_texture(game,
-			"\n\n\tError : dupplicate texture (NO)\n\n\n");
+	if (id == 'N')
+		return (&g->north_texture);
+	if (id == 'S')
+		return (&g->south_texture);
+	if (id == 'W')
+		return (&g->west_texture);
+	if (id == 'E')
+		return (&g->east_texture);
+	return (NULL)
 }
 
-void	assign_south_texture(t_game *game, char *doc)
+void	assign_texture(t_game *g, t_parser_context *ctx, char id, char *doc)
 {
-	if (!game->south_texture)
-		game->south_texture = ft_strdup(doc + 3);
-	else
-		free_game_texture(game,
-			"\n\n\tError : duplicate texture (SO)\n\n\n");
-}
+	char	**slot;
+	char	*p;
 
-void	assign_west_texture(t_game *game, char *doc)
-{
-	if (!game->west_texture)
-		game->west_texture = ft_strdup(doc + 3);
-	else
-		free_game_texture(game,
-			"\n\n\tError : dupplicate texture (WE)\n\n\n");
-}
-
-void	assign_east_texture(t_game *game, char *doc)
-{
-	if (!game->east_texture)
-		game->east_texture = ft_strdup(doc + 3);
-	else
-		free_game_texture(game,
-			"\n\n\tError : dupplicate texture (EA)\n\n\n");
-}
-
-void	assign_texture(t_game *game, t_parser_context *ctx, char c, char *doc)
-{
-	if (!doc[3])
-		return ;
-	if (c == 'N')
-		assign_north_texture(game, doc);
-	else if (c == 'S')
-		assign_south_texture(game, doc);
-	else if (c == 'W')
-		assign_west_texture(game, doc);
-	else if (c == 'E')
-		assign_east_texture(game, doc);
-	ctx->x++;
+	(void)ctx;
+	slot = texture_slot(g, id);
+	if (!slot)
+		free_game_texture(g, "Error\nUnknown texture id\n");
+	p = doc + 2;
+	while(*p && is_space((unsigned char)*p))
+		p++;
+	if(*p == '\0')
+		free_game_texture(g, "Error\nMissing texture path\n");
+	if (*slot != NULL)
+		free_game_texture(g, "Error\nDuplicate texture identifier\n");
+	*slot = ft_strdup(p);
+	if (!*slot)
+		free_game_texture(g, "Error\nAllocation failed for texture path\n");
 }

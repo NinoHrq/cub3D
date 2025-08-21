@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 00:58:41 by marvin            #+#    #+#             */
-/*   Updated: 2025/08/19 14:43:24 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/20 20:05:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -22,60 +22,61 @@ int	key_press(int keycode, t_game *g)
 	if (keycode == ESC || keycode == QUIT)
 		return (ft_close(g));
 	if (keycode == W)
-		game->player.key_up = TRUE;
+		g->player.key_up = TRUE;
 	if (keycode == S)
-		game->player.key_down = TRUE;
+		g->player.key_down = TRUE;
 	if (keycode == A)
-		game->player.key_left = TRUE;
+		g->player.key_left = TRUE;
 	if (keycode == D)
-		game->player.key_right = TRUE;
+		g->player.key_right = TRUE;
 	if (keycode == LEFT)
-		game->player.left_rotate = TRUE;
+		g->player.left_rotate = TRUE;
 	if (keycode == RIGHT)
-		game->player.right_rotate = TRUE;
+		g->player.right_rotate = TRUE;
 	return (0);
 }
 
 int	key_release(int keycode, t_game *g)
 {
 	if (keycode == W)
-		game->player.key_up = FALSE;
+		g->player.key_up = FALSE;
 	if (keycode == S)
-		game->player.key_down = FALSE;
+		g->player.key_down = FALSE;
 	if (keycode == A)
-		game->player.key_left = FALSE;
+		g->player.key_left = FALSE;
 	if (keycode == D)
-		game->player.key_right = FALSE;
+		g->player.key_right = FALSE;
 	if (keycode == LEFT)
-		game->player.left_rotate = FALSE;
+		g->player.left_rotate = FALSE;
 	if (keycode == RIGHT)
-		game->player.right_rotate = FALSE;
+		g->player.right_rotate = FALSE;
 	return (0);
 }
 
-void	closing(t_game *game)
+void	closing(t_game *g)
 {
-	mlx_hook(game->win, 2, 1L << 0, key_press, game);
-	mlx_hook(game->win, 3, 1L << 1, key_release, game);
-	mlx_hook(game->win, QUIT, ESC, ft_close, game);
+	mlx_hook(g->win, 2, 1L << 0, key_press, g);
+	mlx_hook(g->win, 3, 1L << 1, key_release, g);
+	mlx_hook(g->win, QUIT, ESC, ft_close, g);
 }
 
-int	ft_close(t_game *game)
+int	ft_close(t_game *g)
 {
-	if (game->img.img)
+	if (g->img.img)
 	{
-		mlx_destroy_image(game->mlx, game->img.img);
+		mlx_destroy_image(g->mlx, g->img.img);
 	}
-	free_textures(game);
-	if (game->win)
+	free_textures(g);
+	if (g->win)
 	{
-		mlx_destroy_window(game->mlx, game->win);
+		mlx_destroy_window(g->mlx, g->win);
 	}
-	if (game->mlx)
+	if (g->mlx)
 	{
-		mlx_destroy_display(game->mlx);
-		free(game->mlx);
+		mlx_destroy_display(g->mlx);
+		free(g->mlx);
 	}
-	free_game(game);
+	free_game(g);
 	exit(0);
+	return (0);
 }

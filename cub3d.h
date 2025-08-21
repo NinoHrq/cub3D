@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 16:47:26 by nharraqi          #+#    #+#             */
-/*   Updated: 2025/08/20 01:48:37 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/21 02:02:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -186,12 +186,6 @@ typedef struct s_spawn_ctx
 	int			d_flag;
 }				t_spawn_ctx;
 
-typedef struct s_parse_state
-{
-	long		result;
-	int			digit;
-}				t_parse_state;
-
 //---------------doc_reader.c-------------------//
 char **get_doc(char *filename);
 static int	ensure_capacity(t_doc *ctx);
@@ -204,63 +198,61 @@ void process_line(t_doc *ctx);
 void closing_fd(t_doc *ctx);
 
 //---------------init_load_textures.c-------------------//
-void	load_texture(t_game *game, t_texture *texture, char *path);
-void	load_textures(t_game *game);
-void	free_game(t_game *game);
-void	free_textures_ulimit(t_game *game);
-void	free_textures(t_game *game);
+void	load_texture(t_game *g, t_texture *texture, char *path);
+void	load_textures(t_game *g);
+void	free_game(t_game *g);
+void	free_textures_ulimit(t_game *g);
+void	free_textures(t_game *g);
+
+//---------------init_load_textures2.c-------------------//
+void puterr(const char *s);
+void tex_fail(const char *s);
+void tex_load_img_or_die(t_game *g, t_texture *t, char *path);
+void tex_get_addr_or_die(t_game *g, t_texture *t);
 
 //---------------initcore.c-------------------//
 void game_init(t_game *g, char *s);
 void player_zero(t_game *g);
 void texture_paths_zero(t_game *g);
 void colors_zero(t_game *g);
-void init_layout(t_game *game, char *s);
+void init_layout(t_game *g, char *s);
 
 //---------------initcore2.c-------------------//
-void	init_player_pos(t_game *game);
-void	init_mlx(t_game *game);
-void	init_colors(t_game *game);
+void	init_player_pos(t_game *g);
+void	init_mlx(t_game *g);
+void	init_colors(t_game *g);
 void	initialize_context(t_doc *ctx, char *filename);
 
 //---------------manage_close.c-------------------//
-int	key_press(int keycode, t_game *game);
-int	key_release(int keycode, t_game *game);
-void	closing(t_game *game);
-int	ft_close(t_game *game);
+int	key_press(int keycode, t_game *g);
+int	key_release(int keycode, t_game *g);
+void	closing(t_game *g);
+int	ft_close(t_game *g);
 
 //---------------move_player.c-------------------//
-void	init_movement(t_movement *movement);
-void	handle_forward_backward_movement(t_game *game, t_movement *movement);
-void	move_forward_backward(t_game *game, t_movement *movement, int direction);
-int	is_near_wall(t_game *game, double new_x, double new_y);
-void	draw_floor_and_ceiling(t_game *game);
+void	init_movement(t_movement *m);
+void	handle_forward_backward_movement(t_game *g, t_movement *m);
+void	move_forward_backward(t_game *g, t_movement *m, int dir);
+int		is_near_wall(t_game *g, double nx, double ny);
+int		is_blocking(const t_game *g, int y, int x);
 
 //---------------move_player2.c-------------------//
-void	handle_left_right_movement(t_game *game, t_movement *movement);
-void	move_left_right(t_game *game, t_movement *movement, int direction);
-void	handle_rotation(t_game *game, t_movement *movement);
-void	rotate_player(t_game *game, t_movement *movement, int direction);
+void	handle_left_right_movement(t_game *g, t_movement *m);
+void	move_left_right(t_game *g, t_movement *m, int dir);
+void	handle_rotation(t_game *g, t_movement *m);
+void	rotate_player(t_game *g, t_movement *m, int dir);
 void	put_pixel(t_img *img, int x, int y, int color);
 
 //---------------p_color.c-------------------//
-void	handle_color_directive(t_game *game, t_parser_context *ctx, char *line);
-void parse_color(char *s,  int color[3], t_game *game);
-int	parse_color_line(char *s);
+void	handle_color_directive(t_game *g, t_parser_context *ctx, char *line);
+int		parse_color_line(char *s);
+void	 rgb_parse_triplet(char *s, int color[3], t_game *g);
 
 //---------------p_color_utils.c-------------------//
-long my_strtol(const char *str, char **endptr, int base);
-void	skip_whitespace(const char **str):
-int	get_sign(const char **str);
-int	determine_base(const char **str, int base);
-long	parse_digits(const char **str, int base, int sign, char **endptr);
-
-//---------------p_color_utils2.c-------------------//
-int	get_digit_value(char c);
-int	is_valid_digit(int digit, int base);
-long	update_result(t_parse_state *state, int base, int sign, char **endptr);
-void	free_wrong_color(t_game *game);
-void	protect_wrong_color(char **ptr, t_game *game);
+long 	my_strtol(const char *str, char **endptr);
+int		is_digit(int c);
+void	free_wrong_color(t_game *g);
+void	protect_wrong_color(char **ptr, t_game *g);
 
 //---------------config_parse_utils.c-------------------//
 int is_space(int c);
@@ -291,32 +283,31 @@ int	no_empty_line(char **doc, int i, int is_map);
 //---------------p_doc.c-------------------//
 int	validate_identifier(char *line);
 int	parse_doc(char **doc, int start_map);
-void	exit_properly_parsing(t_game *game);
+void	exit_properly_parsing(t_game *g);
 
 //---------------p_player.c-------------------//
 void	process_spawn_tile(char **map, int i, int j, t_spawn_ctx *ctx);
 void	process_tile(char **map, int i, int j, t_spawn_ctx *ctx);
 void	check_multiple_spawns(int *d_flag, t_game *dt);
 void	player_spawn(char **map, t_game *dt);
+int		map_char_kind(char c);
 
 //---------------p_player2.c-------------------//
 void	check_spawn_validity(char **map, int i, int j, t_game *dt);
-void	carry_on(char **map, int i, int j, t_game *dt);
+int		neighbors_ok(char **map, int i, int j, int h);
 void	last_check_spawn(char **map, int i, int *j, t_game *dt);
 void	set_player_position(char **map, int i, int j, t_game *dt);
+void	die_spawn(t_game *g, const char *msg);
 
 //---------------p_textures.c-------------------//
-void	assign_texture(t_game *game, t_parser_context *ctx, char c, char *doc);
-void	assign_north_texture(t_game *game, char *doc);
-void	assign_south_texture(t_game *game, char *doc);
-void	assign_west_texture(t_game *game, char *doc);
-void	assign_east_texture(t_game *game, char *doc);
+void	assign_texture(t_game *g, t_parser_context *ctx, char c, char *doc);
+char	**texture_slot(t_game *g, char id);
 
 //---------------p_validate_utils.c-------------------//
-bool	valid_texture(t_game *game);
-void	parse_texture(t_game *game);
-bool	ends_with_xpm(char *path);
+bool	valid_texture(t_game *g);
+bool	has_xpm_suffix(const char *path);
 int	check_texture_path(const char *path);
+double	safe_delta(double ray);
 
 //---------------p_wall.c-------------------//
 char **parse_wall(char **map, t_game *g);
@@ -356,24 +347,23 @@ char *extracting_extension(char *s);
 int verif_extension(char *ext);
 
 //---------------raycast.c-------------------//
-void	raycast(t_game *game);
-void	init_raycast(t_raycast *rc, t_game *game, int x);
-void	calculate_x_step_and_side_dist(t_raycast *rc, t_game *game);
-void	calculate_y_step_and_side_dist(t_raycast *rc, t_game *game);
-void	calculate_step_and_side_dist(t_raycast *rc, t_game *game);
+void	raycast(t_game *g);
+void	init_raycast(t_raycast *rc, t_game *g, int x);
+void	calculate_x_step_and_side_dist(t_raycast *rc, t_game *g);
+void	calculate_y_step_and_side_dist(t_raycast *rc, t_game *g);
+void	calculate_step_and_side_dist(t_raycast *rc, t_game *g);
 
 //---------------raycast2.c-------------------//
-void	perform_dda(t_raycast *rc, t_game *game);
-void	calculate_wall_distance_and_draw_range(t_raycast *rc, t_game *game);
-void	select_texture_and_calculate_tex_coords(t_raycast *rc, t_game *game);
-void	draw_wall_column(t_raycast *rc, t_game *game, int x);
-void	draw_sky_and_floor_column(t_raycast *rc, t_game *game, int x);
+void	perform_dda(t_raycast *rc, t_game *g);
+void	calculate_wall_distance_and_draw_range(t_raycast *rc, t_game *g);
+void	select_texture_and_calculate_tex_coords(t_raycast *rc, t_game *g);
+void	draw_wall_column(t_raycast *rc, t_game *g, int x);
 
-//---------------redraw.c-------------------//
-void	move_player(t_game *game);
-void	draw_floor_and_ceiling(t_game *game);
-void	raycast(t_game *game);
-int	drawing(t_game *game);
+//---------------drawing.c-------------------//
+void	move_player(t_game *g);
+void	draw_floor_and_ceiling(t_game *g);
+void	raycast(t_game *g);
+int		drawing(t_game *g);
 
 //---------------verify_info.c-------------------//
 void verify_info(t_game *g);

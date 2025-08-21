@@ -6,75 +6,69 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:19:14 by marvin            #+#    #+#             */
-/*   Updated: 2025/07/17 02:10:39 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/20 19:38:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "../includes/cub3d.h"
 
 void	check_spawn_validity(char **map, int i, int j, t_game *dt);
-void	carry_on(char **map, int i, int j, t_game *dt);
+int		neighbors_ok(char **map, int i, int j, int h);
 void	last_check_spawn(char **map, int i, int *j, t_game *dt);
 void	set_player_position(char **map, int i, int j, t_game *dt);
+void	die_spawn(t_game *g, const char *msg);
+
+void	die_spawn(t_game *g, const char *msg)
+{
+	write(2, "Error\n", 6);
+	write(2, msg, (int)ft_strlen(msg));
+	free_game_wall(g);
+}
+
+int neighbors_ok(char **map, int i, int j, int h)
+{
+	int	w;
+	int	upw;
+	int	dnw;
+
+	w = ft_strlen_skip_empty_line(map[i]);
+	if (j > 0 && is_space((unsigned char)map[i][j - 1]))
+		return (0);
+	if (j + 1 < w && is_space((unsigned char)map[i][j + 1]))
+		return (0);
+	if (i > 0)
+	{
+		upw = ft_strlen_skip_empty_line(map[i - 1]);
+		if (j >= upw || is_space((unsigned char)map[i - 1][j]))
+			return (0);
+	}
+	if (i + 1 < h)
+	{
+		dnw = ft_strlen_skip_empty_line(map[i + 1]);
+		if (j >= dnw || is_space((unsigned char)map[i + 1][j]))
+			return (0);
+	}
+	return (1);
+}
 
 void	check_spawn_validity(char **map, int i, int j, t_game *dt)
 {
-	if (j > 0 && (map[i][j] == 'N' || map[i][j] == 'E' || map[i][j] == 'S'
-			|| map[i][j] == 'W'))
-		j--;
+	int h;
+	
+	h = tablen(map);
 	last_check_spawn(map, i, &j, dt);
-	if (map[i][j + 1] && (map[i][j] == 'N' || map[i][j] == 'E'
-			|| map[i][j] == 'S' || map[i][j] == 'W'))
-		j++;
-	if (map[i][j] != '0' && map[i][j] != '1')
-	{
-		printf("\n\n\tError: Invalid spawn position at [%d %d]\n\n\n",
-			i, j);
-		exit_properly_parsing(dt);
-	}
-	if (j > 0 && (map[i][j] != 'N' && map[i][j] != 'E' && map[i][j] != 'S'
-		&& map[i][j] != 'W' && (map[i][j - 1] == 'N' || map[i][j - 1] == 'E'
-			|| map[i][j - 1] == 'S' || map[i][j - 1] == 'W')))
-		j++;
-	if (map[i][j] != 'N' && map[i][j] != 'E' && map[i][j] != 'S'
-		&& map[i][j] != 'W' && (map[i][j + 1] == 'N' || map[i][j + 1] == 'E'
-			|| map[i][j + 1] == 'S' || map[i][j + 1] == 'W'))
-		j++;
-	carry_on(map, i, j, dt);
-}
-
-void	carry_on(char **map, int i, int j, t_game *dt)
-{
-	if ((i > 0 && (j >= ft_strlen(map[i - 1]) || map[i - 1][j] == ' ' || map[i
-				- 1][j] == '\0')) || (map[i + 1] && (j >= ft_strlen(map[i + 1])
-				|| map[i + 1][j] == ' ' || map[i + 1][j] == '\0')) || (j > 0
-			&& (map[i][j - 1] == ' ' || map[i][j - 1] == '\0')) || (map[i][j
-			+ 1] && (j + 1 >= ft_strlen(map[i]) || map[i][j + 1] == ' '
-				|| map[i][j + 1] == '\0')))
-	{
-		printf("\n\n\tError: Invalid spawn position at [%d %d]\n\n\n",
-			i, j);
-		exit_properly_parsing(dt);
-	}
-	if ((i > 0 && (map[i - 1][j] == ' ' || map[i - 1][j] == '\0')) || (map[i
-		+ 1] && (map[i + 1][j] == ' ' || map[i + 1][j] == '\0')) || (j > 0
-		&& (map[i][j - 1] == ' ' || map[i][j - 1] == '\0')) || ((map[i][j
-			+ 1] == ' ' || map[i][j + 1] == '\0')))
-	{
-		printf("\n\n\tError: Invalid spawn position at [%d %d]\n\n\n",
-			i, j);
-		exit_properly_parsing(dt);
-	}
+	if(!neighbors_ok(map, i, j, h))
+		die_spawn(dt, "Invalid spawn position\n");
 }
 
 void	last_check_spawn(char **map, int i, int *j, t_game *dt)
 {
-	if (map[i][*j] != '0' && map[i][*j] != '1')
-	{
-		printf("\n\n\tError: Invalid spawn position at [%d %d]\n\n\n",
-			i, *j);
-		exit_properly_parsing(dt);
-	}
+	char c;
+	
+	(void)dt;
+	c = map[i][*j];
+	if (!(c == 'N' || c == 'S' || c == 'E' || c == 'W'))
+		die_spawn(dt, "Invalid spawn token\n");
 }
 
 void	set_player_position(char **map, int i, int j, t_game *dt)
